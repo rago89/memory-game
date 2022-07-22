@@ -1,7 +1,7 @@
 import * as mongoDB from 'mongodb';
 import * as dotenv from 'dotenv';
 import { userSchema } from './schemas/user';
-const config = require('../config');
+import finalConfig from '../config/index';
 
 export const collections: { users?: mongoDB.Collection } = {};
 
@@ -9,7 +9,13 @@ const connectToDatabase = async () => {
   try {
     dotenv.config();
 
-    const client: mongoDB.MongoClient = new mongoDB.MongoClient(config.DB_PATH);
+    if (!finalConfig.DB_PATH) {
+      throw new Error('DB_PATH is missing');
+    }
+
+    const client: mongoDB.MongoClient = new mongoDB.MongoClient(
+      finalConfig.DB_PATH
+    );
 
     await client.connect();
 

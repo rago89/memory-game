@@ -1,14 +1,14 @@
 import app from './server';
 import connectToDatabase from './db/database.services';
-const config = require('./config');
+import finalConfig from './config/index';
 
 (async (): Promise<void> => {
   try {
     await connectToDatabase();
 
-    app.listen(config.PORT, () => {
+    app.listen(finalConfig.PORT, () => {
       console.log(
-        `listening at http://localhost:${config.PORT} (${config.MODE} mode)`
+        `listening at http://localhost:${finalConfig.PORT} (${finalConfig.MODE} mode)`
       );
     });
   } catch (error) {

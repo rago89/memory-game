@@ -1,0 +1,53 @@
+{
+  "title": "User",
+  "type": "object",
+  "properties": {
+    "_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "description": "'name' is required and is a string"
+    },
+    "email": {
+      "type": "string",
+      "minLength": 6,
+      "maxLength": 40,
+      "description": "required and must be a valid email address"
+    },
+    "password": {
+      "type": "string",
+      "minLength": 6,
+      "maxLength": 40,
+      "description": "'password' is required and is a string"
+    },
+    "registerDate": {
+      "type": "date",
+      "description": "It must be a date",
+      "default": "Date.now()"
+    },
+    "updateDate": {
+      "type": "date",
+      "description": "Users update date"
+    },
+    "gameLevel": {
+      "type": "string",
+      " description": "Current user's game level"
+    },
+    "avatar": {
+      "type": "object",
+      "required": ["data", "contentType"],
+      "properties": {
+        "data": {
+          "type": "string",
+          "description": "Image data represented as HEX"
+        },
+        "contentType": {
+          "type": "string",
+          "description": "type of image"
+        }
+      }
+    }
+  },
+  "required": ["name", "email", "password"]
+}

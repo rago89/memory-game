@@ -5,7 +5,7 @@ import morgan from 'morgan';
 import * as fs from 'fs';
 import * as path from 'path';
 import routes from './routes';
-const config = require('./config');
+import finalConfig from './config';
 
 const app: Application = express();
 
@@ -18,10 +18,16 @@ app.use(
     }),
   })
 );
-if (config.MODE === 'development') {
+if (finalConfig.MODE === 'development') {
   app.use(morgan('dev'));
 }
-app.use('/', express.static(path.join(__dirname, '..', config.STATIC_DIR)));
+
+finalConfig.STATIC_DIR &&
+  app.use(
+    '/',
+    express.static(path.join(__dirname, '..', finalConfig.STATIC_DIR))
+  );
+
 app.use('/api', routes);
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);
