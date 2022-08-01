@@ -21,3 +21,17 @@ content-type: application/json`
 
 DELETE  http://localhost:4000/api/users/62d196a4cf1b40c2e4ffdea7 HTTP/1.1
 content-type: application/json`
+
+
+
+
+###
+//----------------Game-------------------//
+
+POST http://localhost:4000/api/users/register HTTP/1.1
+content-type: application/json
+
+{
+    "gameLevel": 1,
+    "userId": "62daeb8729ec562c57ae9377",
+}
