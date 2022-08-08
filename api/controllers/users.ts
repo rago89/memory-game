@@ -13,6 +13,7 @@ import checkPasswords from '../utils/check-passwords';
 import checkEmails from '../utils/check-emails';
 import checkParamAndBodyIds from '../utils/check-ids';
 import multer from 'multer';
+import { deleteImageAsync } from '../utils/delete-image';
 const upload = multer().single('avatar');
 
 export interface UserController {
@@ -152,10 +153,7 @@ const usersController: UserController = {
     } catch (error) {
       // if any error ,make sure multer doesn't store image
       if (req.file) {
-        // await deleteAvatar.deleteImageAsync(
-        //   req.file.filename,
-        //   'avatar-uploads'
-        // );
+        await deleteImageAsync(req.file.filename, 'avatar-uploads');
       }
       next(error);
     }

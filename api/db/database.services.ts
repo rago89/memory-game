@@ -1,9 +1,13 @@
 import * as mongoDB from 'mongodb';
 import * as dotenv from 'dotenv';
 import { userSchema } from './schemas/user';
+import { gameSchema } from './schemas/game';
 import finalConfig from '../config/index';
 
-export const collections: { users?: mongoDB.Collection } = {};
+export const collections: {
+  users?: mongoDB.Collection;
+  games?: mongoDB.Collection;
+} = {};
 
 const connectToDatabase = async () => {
   try {
@@ -21,16 +25,19 @@ const connectToDatabase = async () => {
 
     const db: mongoDB.Db = client.db(process.env['DB_NAME']);
 
-    await db.command(userSchema);
+    !db.collection(process.env['COLLECTION_USER']!)
+      ? (collections.users = await db.createCollection(
+          process.env['COLLECTION_USER']!,
+          userSchema
+        ))
+      : (collections.users = db.collection(process.env['COLLECTION_USER']!));
 
-    const gamesCollection: mongoDB.Collection = db.collection(
-      process.env['GAMES_COLLECTION_USER']!
-    );
-
-    collections.users = gamesCollection;
+    !db.collection(process.env['COLLECTION_GAME']!)
+      ? await db.createCollection(process.env['COLLECTION_GAME']!, gameSchema)
+      : (collections.games = db.collection(process.env['COLLECTION_GAME']!));
 
     console.log(
-      `Successfully connected to database: ${db.databaseName} and collection: ${gamesCollection.collectionName}`
+      `Successfully connected to database: ${db.databaseName} and collections: '${collections.users.collectionName}', '${collections.games?.collectionName}' `
     );
   } catch (error) {
     console.log(error);
