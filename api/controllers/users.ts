@@ -2,12 +2,12 @@ import { UserManager } from './../business-logic/users';
 import {
   UserDataToUpdate,
   UserIncomingData,
-  ReturnedUserAfterCreation,
+  CreatedUser,
 } from 'api/interfaces/user';
 import User from '../models/user';
 import { Request, Response, NextFunction } from 'express';
 import { hashCreator } from '../utils/hashCreator';
-const userManager: UserManager = require('../business-logic/users');
+import userManager from './../business-logic/users';
 import { DeleteResponse } from '../data-access/users';
 import checkPasswords from '../utils/check-passwords';
 import checkEmails from '../utils/check-emails';
@@ -30,7 +30,6 @@ const usersController: UserController = {
       const users: User[] = await userManager.getAll();
       res.status(200).json(users);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   },
@@ -43,9 +42,7 @@ const usersController: UserController = {
       const passwordHashed = hashCreator(newUserData.password);
       newUserData.password = passwordHashed;
 
-      const user: ReturnedUserAfterCreation | void = await userManager.postUser(
-        newUserData
-      );
+      const user: CreatedUser | void = await userManager.postUser(newUserData);
       res.status(201).json(user);
     } catch (error: any) {
       if (error.code === 11000) {
@@ -66,7 +63,6 @@ const usersController: UserController = {
       const user = await userManager.getOne(id);
       res.status(200).json(user);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   },
@@ -77,8 +73,8 @@ const usersController: UserController = {
         res.status(400).send("'id' is required");
         return;
       }
-      const response: DeleteResponse = await userManager.deleteOne(id);
 
+      const response: DeleteResponse = await userManager.deleteOne(id);
       if (response.acknowledged === true && response.deletedCount === 1) {
         res
           .status(200)
@@ -89,7 +85,6 @@ const usersController: UserController = {
         .status(500)
         .json({ message: 'An Error has occurred try again later' });
     } catch (error) {
-      console.log(error);
       next(error);
     }
   },
@@ -97,18 +92,19 @@ const usersController: UserController = {
     try {
       const { id } = req.params;
       const newData: UserDataToUpdate = req.body;
+
       // checkIds
-      checkParamAndBodyIds(id, newData._id);
+      const isValidId = checkParamAndBodyIds(id, newData._id);
+
+      if (isValidId) delete newData._id;
+
       upload(req, res, function (error) {
         if (error instanceof multer.MulterError) {
           // A Multer error occurred when uploading.
           throw new Error(error.message);
-        } else if (error) {
-          // An unknown error occurred when uploading.
-          next(error);
         }
-        // Everything went fine.
       });
+
       const user: User = await userManager.getOne(id);
       if (!user) {
         throw new Error(
@@ -131,25 +127,10 @@ const usersController: UserController = {
           user
         );
       }
-      // if there is an image uploaded
-      if (req.file !== undefined) {
-        await userManager.updateOne(newData, req.file);
-        const userToSend = {
-          id: user._id,
-          name: user.name,
-          avatar: user.avatar,
-        };
-        res.status(200).send(userToSend);
-        return;
-      }
-      await userManager.updateOne(newData);
-      const userToSend = {
-        id: user._id,
-        name: user.name,
-        avatar: user.avatar,
-      };
 
-      res.status(200).send(userToSend);
+      const userUpdated = await userManager.updateOne(id, newData, req.file);
+
+      res.status(200).send(userUpdated);
     } catch (error) {
       // if any error ,make sure multer doesn't store image
       if (req.file) {

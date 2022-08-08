@@ -1,21 +1,20 @@
+import { UpdatedUser } from './../interfaces/user';
 import { collections } from '../db/database.services';
 import { ObjectId } from 'mongodb';
 import User from '../models/user';
-import {
-  ReturnedUserAfterCreation,
-  UserDataToUpdate,
-} from '../interfaces/user';
+import { CreatedUser, UserDataToUpdate } from '../interfaces/user';
 
 export type DeleteResponse = { acknowledged: boolean; deletedCount: number };
+export type UpdateResponse = { acknowledged: boolean; modifiedCount: number };
 
 export interface UserDbAccess {
-  create(user: User): Promise<User | void>;
+  create(user: User): Promise<CreatedUser | void>;
   getAll(): Promise<User[]>;
   getOne(id: string): Promise<User>;
   updateOne(
-    newData: UserDataToUpdate,
-    avatar: Express.Multer.File
-  ): Promise<any>;
+    id: string,
+    newData: UserDataToUpdate
+  ): Promise<UpdateResponse | undefined>;
   deleteOne(id: string): Promise<DeleteResponse>;
 }
 const databaseAccess: UserDbAccess = {
@@ -27,12 +26,12 @@ const databaseAccess: UserDbAccess = {
     const result = await collections.users?.insertOne(userData);
     if (result?.insertedId) {
       const user = await this.getOne(result?.insertedId.toString()!);
-      const dataToReturn: ReturnedUserAfterCreation = {
+      const dataToReturn: CreatedUser = {
         _id: user._id,
         name: user.name,
         email: user.email,
       };
-      return user;
+      return dataToReturn;
     }
     throw new Error('An error has occurred');
   },
@@ -42,12 +41,19 @@ const databaseAccess: UserDbAccess = {
     })) as User;
     return user;
   },
-  updateOne: async (newData, avatar) => {
-    const user = await collections.users?.updateOne(
-      { _id: new ObjectId(newData._id) },
+  async updateOne(id, newData) {
+    const updateUser = await collections.users?.updateOne(
+      { _id: new ObjectId(id) },
       { $set: newData }
     );
-    return user;
+
+    if (updateUser?.modifiedCount === 1) {
+      await collections.users?.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { updateDate: new Date() } }
+      );
+    }
+    return updateUser;
   },
   async deleteOne(id) {
     const response: DeleteResponse = await collections.users?.deleteOne({
@@ -57,4 +63,4 @@ const databaseAccess: UserDbAccess = {
   },
 };
 
-module.exports = databaseAccess;
+export default databaseAccess;

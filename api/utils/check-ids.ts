@@ -1,4 +1,4 @@
-const checkParamAndBodyIds = (paramId?: string, bodyId?: string) => {
+const checkParamAndBodyIds = (paramId?: string, bodyId?: string): boolean => {
   if (!paramId) {
     throw new Error(`There is not id in params`);
   }
@@ -14,6 +14,7 @@ const checkParamAndBodyIds = (paramId?: string, bodyId?: string) => {
   if (bodyId !== paramId) {
     throw new Error('Cannot change user ID after creation!');
   }
+  return true;
 };
 
 export default checkParamAndBodyIds;

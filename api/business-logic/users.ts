@@ -1,18 +1,22 @@
-import { UserDbAccess, DeleteResponse } from './../data-access/users';
+import { UpdatedUser, CreatedUser } from './../interfaces/user';
+import { DeleteResponse, UpdateResponse } from './../data-access/users';
 import User from '../models/user';
 import { UserDataToUpdate } from '../interfaces/user';
+import { compressSharpAvatar } from '../utils/sharp';
+import { deleteImageAsync } from '../utils/delete-image';
 
-const dbAccess: UserDbAccess = require('../data-access/users');
+import { default as dbAccess } from './../data-access/users';
 
 export interface UserManager {
   getAll(): Promise<User[]>;
-  postUser(user: User): Promise<User | void>;
+  postUser(user: User): Promise<CreatedUser | void>;
   getOne(id: string): Promise<User>;
   deleteOne(id: string): Promise<DeleteResponse>;
   updateOne(
+    id: string,
     newData: UserDataToUpdate,
     file?: Express.Multer.File
-  ): Promise<DeleteResponse | undefined>;
+  ): Promise<UpdatedUser | {}>;
 }
 
 const userManager: UserManager = {
@@ -28,13 +32,36 @@ const userManager: UserManager = {
   deleteOne: async (id) => {
     return await dbAccess.deleteOne(id);
   },
-  updateOne: async (newData, file) => {
-    let userWithDataUpdated: DeleteResponse | undefined;
+  updateOne: async (id, newData, file) => {
     if (file) {
-      userWithDataUpdated = await dbAccess.updateOne(newData, file);
+      const imageCompressed: Buffer = await compressSharpAvatar(file.path);
+      const pictureResized = {
+        data: imageCompressed.toString('base64'),
+        contentType: file.mimetype,
+      };
+      newData.avatar = pictureResized;
+      await deleteImageAsync(file.filename, 'avatar-uploads');
     }
-    return userWithDataUpdated;
+
+    const updateUser: UpdateResponse | undefined = await dbAccess.updateOne(
+      id,
+      newData
+    );
+
+    if (updateUser?.modifiedCount === 1) {
+      const user: User = await dbAccess.getOne(id);
+      const updatedUser: UpdatedUser = {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        gameLevel: user.gameLevel,
+        avatar: user.avatar,
+        updateDate: user.updateDate,
+      };
+      return updatedUser;
+    }
+    return {};
   },
 };
 
-module.exports = userManager;
+export default userManager;

@@ -12,6 +12,7 @@ export default class User {
     public password: string,
     public gameLevel?: string,
     public avatar?: Image,
-    public _id?: ObjectId
+    public _id?: ObjectId,
+    public updateDate?: Date
   ) {}
 }

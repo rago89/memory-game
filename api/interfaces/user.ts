@@ -1,5 +1,7 @@
 import { ObjectId } from 'mongodb';
 
+type Image = { data: string; contentType: string };
+
 export interface User {
   _id: ObjectId;
   name: string;
@@ -8,7 +10,7 @@ export interface User {
   registerDate: string;
   updateDate: string;
   gameLevel?: string;
-  avatar?: { data: string; contentType: string };
+  avatar?: Image;
 }
 
 export interface UserIncomingData {
@@ -17,11 +19,20 @@ export interface UserIncomingData {
   password: string;
 }
 
-export interface ReturnedUserAfterCreation {
+export interface CreatedUser {
   _id?: ObjectId;
   name: string;
   email: string;
   gameLevel?: string;
+}
+
+export interface UpdatedUser {
+  _id?: ObjectId;
+  name: string;
+  email: string;
+  gameLevel?: string;
+  avatar?: Image;
+  updateDate?: Date;
 }
 
 export interface UserDataToUpdate {
@@ -34,5 +45,5 @@ export interface UserDataToUpdate {
   newPassword: string;
   oldPassword: string;
   gameLevel?: string;
-  avatar?: { data: string; contentType: string };
+  avatar?: Image;
 }

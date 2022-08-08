@@ -22,16 +22,37 @@ content-type: application/json`
 DELETE  http://localhost:4000/api/users/62d196a4cf1b40c2e4ffdea7 HTTP/1.1
 content-type: application/json`
 
+###
+PUT http://localhost:4000/api/users/62f0e6bd6b92a7b049d17222
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="name"
+
+update6
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="_id"
+
+62f0e6bd6b92a7b049d17222
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="avatar"; filename="dog.jpg"
+Content-Type: image/jpg
+
+< ./api/test-images/dog.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
 
 
 ###
 //----------------Game-------------------//
 
-POST http://localhost:4000/api/users/register HTTP/1.1
+POST http://localhost:4000/api/game/level HTTP/1.1
 content-type: application/json
 
 {
     "gameLevel": 1,
-    "userId": "62daeb8729ec562c57ae9377",
+    "userId": "62f0e3b5712912f5d2538674",
 }
+
+
+###
