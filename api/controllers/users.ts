@@ -1,4 +1,3 @@
-import { UserManager } from './../business-logic/users';
 import {
   UserDataToUpdate,
   UserIncomingData,
@@ -141,4 +140,4 @@ const usersController: UserController = {
   },
 };
 
-module.exports = usersController;
+export default usersController;

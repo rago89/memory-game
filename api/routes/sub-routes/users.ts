@@ -1,9 +1,7 @@
-import { UserController } from './../../controllers/users';
 import { Router } from 'express';
 import express from 'express';
 import upload from '../../middleware/multer-avatar';
-
-const usersController: UserController = require('../../controllers/users');
+import usersController from './../../controllers/users';
 
 const routes: Router = express.Router();
 

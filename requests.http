@@ -2,7 +2,7 @@ POST http://localhost:4000/api/users/register HTTP/1.1
 content-type: application/json
 
 {
-    "name": "sample8",
+    "name": "sample10",
     "email": "test8@email.com",
     "password":"hello123"
 }
@@ -41,18 +41,22 @@ Content-Type: image/jpg
 < ./api/test-images/dog.jpg
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
-
+//----------------Game-------------------//
 
 ###
-//----------------Game-------------------//
 
 POST http://localhost:4000/api/game/level HTTP/1.1
 content-type: application/json
 
 {
     "gameLevel": 1,
-    "userId": "62f0e3b5712912f5d2538674",
+    "userId": "62f0e3b5712912f5d2538674"
 }
+
+###
+
+GET http://localhost:4000/api/game/level HTTP/1.1
+content-type: application/json
 
 
 ###

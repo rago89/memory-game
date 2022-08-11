@@ -10,8 +10,13 @@ export const gameSchema = {
         _id: {},
         userId: {},
         gameLevel: {
-          bsonType: 'string',
+          bsonType: 'number',
           description: 'Current user"s game level',
+          default: 0,
+        },
+        updateDate: {
+          bsonType: 'date',
+          description: 'Current user"s game update date level',
         },
       },
     },
