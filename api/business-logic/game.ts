@@ -5,7 +5,7 @@ import Game from '../models/game';
 export interface GameManager {
   postGame(newGame: Game): Promise<Game>;
   getAll(): Promise<Game[]>;
-  getOne(id: ObjectId): Promise<Game>;
+  getOne(id: string): Promise<Game>;
   updateOne(game: Game): Promise<Game | {}>;
 }
 
@@ -26,7 +26,7 @@ const gameManager: GameManager = {
       throw new Error('An error has occurred');
     }
     if (sendDataToUpdate.modifiedCount === 1) {
-      gameUpdated = await dbAccess.getOne(new ObjectId(game._id!));
+      gameUpdated = await dbAccess.getOne(game.userId);
       return gameUpdated;
     }
     return {};

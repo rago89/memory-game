@@ -40,7 +40,7 @@ const gameController: GameController = {
       if (!req.params['id']) {
         throw new Error('Id is required');
       }
-      const id = new ObjectId(req.params['id']);
+      const id = req.params['id'];
       const game: Game = await gameManager.getOne(id);
       res.status(200).json(game);
     } catch (error) {
