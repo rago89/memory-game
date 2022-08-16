@@ -5,7 +5,6 @@ import finalConfig from './config/index';
 (async (): Promise<void> => {
   try {
     await connectToDatabase();
-
     app.listen(finalConfig.PORT, () => {
       console.log(
         `listening at http://localhost:${finalConfig.PORT} (${finalConfig.MODE} mode)`
