@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import gameManager from '../business-logic/game';
 import { ObjectId } from 'mongodb';
 import Game from '../models/game';
+import checkParamAndBodyIds from '../utils/check-ids';
 export interface GameController {
   postGame(req: Request, res: Response, next: NextFunction): Promise<void>;
   getAll(req: Request, res: Response, next: NextFunction): Promise<void>;
@@ -49,9 +50,12 @@ const gameController: GameController = {
   },
   updateGame: async (req, res, next) => {
     try {
-      const _id = new ObjectId(req.params['id']);
-      const { userId, gameLevel } = req.body;
-      const game = new Game(userId, gameLevel, _id);
+      const _id = req.params['id'];
+      const { userId, gameLevel, gameId } = req.body;
+      if (!checkParamAndBodyIds(_id, gameId)) {
+        throw new Error('Ids do not match');
+      }
+      const game = new Game(userId, gameLevel, new ObjectId(_id));
       const gameUpdated = await gameManager.updateOne(game);
       res.status(200).json(gameUpdated);
     } catch (error) {
