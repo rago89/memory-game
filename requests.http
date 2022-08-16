@@ -72,7 +72,7 @@ content-type: application/json
 
 {
     "userId": "62f0e3b5712912f5d2538674",
-    "gameLevel": 5,
+    "gameLevel": 6,
     "gameId":"62f540163539e1058d15aed0" 
 }
 
