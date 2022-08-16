@@ -11,6 +11,7 @@ export interface UserDbAccess {
   create(user: User): Promise<CreatedUser | void>;
   getAll(): Promise<User[]>;
   getOne(id: string): Promise<User>;
+  getOneByEmail(email: string): Promise<User>;
   updateOne(
     id: string,
     newData: UserDataToUpdate
@@ -60,6 +61,12 @@ const databaseAccess: UserDbAccess = {
       _id: new ObjectId(id),
     })!;
     return response;
+  },
+  async getOneByEmail(email) {
+    const user = (await collections.users?.findOne({
+      email,
+    })) as User;
+    return user;
   },
 };
 
