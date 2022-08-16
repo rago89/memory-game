@@ -66,3 +66,13 @@ content-type: application/json
 
 
 ###
+// Update one
+PUT http://localhost:4000/api/game/62f540163539e1058d15aed0 HTTP/1.1
+content-type: application/json
+
+{
+    "userId": "62f0e3b5712912f5d2538674",
+    "gameLevel": 4
+}
+
+###

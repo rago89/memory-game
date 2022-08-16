@@ -47,7 +47,17 @@ const gameController: GameController = {
       next(error);
     }
   },
-  updateGame: async (req, res, next) => {},
+  updateGame: async (req, res, next) => {
+    const _id = new ObjectId(req.params['id']);
+    try {
+      const { userId, gameLevel } = req.body;
+      const game = new Game(userId, gameLevel, _id);
+      const gameUpdated = await gameManager.updateOne(game);
+      res.status(200).json(gameUpdated);
+    } catch (error) {
+      next(error);
+    }
+  },
 };
 
 export default gameController;

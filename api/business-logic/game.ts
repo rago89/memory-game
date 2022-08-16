@@ -6,7 +6,7 @@ export interface GameManager {
   postGame(newGame: Game): Promise<Game>;
   getAll(): Promise<Game[]>;
   getOne(id: ObjectId): Promise<Game>;
-  updateOne(newData: Game): Promise<Game | undefined>;
+  updateOne(game: Game): Promise<Game | {}>;
 }
 
 const gameManager: GameManager = {
@@ -19,17 +19,17 @@ const gameManager: GameManager = {
   getOne: async (id) => {
     return await dbAccess.getOne(id);
   },
-  updateOne: async (newData) => {
-    const sendDataToUpdate = await dbAccess.updateOne(newData);
+  updateOne: async (game) => {
+    const sendDataToUpdate = await dbAccess.updateOne(game);
     let gameUpdated: Game;
     if (sendDataToUpdate === undefined) {
       throw new Error('An error has occurred');
     }
     if (sendDataToUpdate.modifiedCount === 1) {
-      gameUpdated = await dbAccess.getOne(newData._id!);
+      gameUpdated = await dbAccess.getOne(new ObjectId(game._id!));
       return gameUpdated;
     }
-    return undefined;
+    return {};
   },
 };
 
