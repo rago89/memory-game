@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import gameManager from '../business-logic/game';
+import userManager from '../business-logic/users';
 import { ObjectId } from 'mongodb';
 import Game from '../models/game';
 import checkParamAndBodyIds from '../utils/check-ids';
@@ -13,11 +14,28 @@ export interface GameController {
 const gameController: GameController = {
   postGame: async (req, res, next) => {
     try {
-      const newGame: Game = req.body;
-      if (newGame.gameLevel > 0) {
-        throw new Error(
-          'Cannot start new game user has already started to play'
-        );
+      const newGame = new Game(req.body.userId, req.body.gameLevel);
+      const user = await userManager.getOne(newGame.userId);
+      if (!user) {
+        res
+          .status(400)
+          .json(`User with the given id:'${newGame.userId} doesn't exist!'`);
+        return;
+      }
+      const game: Game = await gameManager.getOne(newGame.userId);
+      if (game) {
+        res
+          .status(400)
+          .json(
+            `Cannot start new game user has already started to play current Level:(${game.gameLevel})`
+          );
+        return;
+      }
+      if (newGame.gameLevel > 1) {
+        res
+          .status(400)
+          .json('Cannot start new game user has already started to play');
+        return;
       }
       const postGame: Game = await gameManager.postGame(newGame);
       if (Object.keys(postGame).length === 0) {
