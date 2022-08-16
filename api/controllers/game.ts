@@ -48,8 +48,8 @@ const gameController: GameController = {
     }
   },
   updateGame: async (req, res, next) => {
-    const _id = new ObjectId(req.params['id']);
     try {
+      const _id = new ObjectId(req.params['id']);
       const { userId, gameLevel } = req.body;
       const game = new Game(userId, gameLevel, _id);
       const gameUpdated = await gameManager.updateOne(game);
