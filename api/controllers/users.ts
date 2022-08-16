@@ -7,7 +7,7 @@ import User from '../models/user';
 import { Request, Response, NextFunction } from 'express';
 import { hashCreator } from '../utils/hashCreator';
 import userManager from './../business-logic/users';
-import { DeleteResponse } from '../data-access/users';
+import databaseAccess, { DeleteResponse } from '../data-access/users';
 import checkPasswords from '../utils/check-passwords';
 import checkEmails from '../utils/check-emails';
 import checkParamAndBodyIds from '../utils/check-ids';
@@ -17,7 +17,7 @@ const upload = multer().single('avatar');
 
 export interface UserController {
   getAll(req: Request, res: Response, next: NextFunction): Promise<void>;
-  postUser(req: Request, res: Response, next: NextFunction): Promise<void>;
+  createUser(req: Request, res: Response, next: NextFunction): Promise<void>;
   getOne(req: Request, res: Response, next: NextFunction): Promise<void>;
   deleteOne(req: Request, res: Response, next: NextFunction): Promise<void>;
   updateUser(req: Request, res: Response, next: NextFunction): Promise<void>;
@@ -32,10 +32,21 @@ const usersController: UserController = {
       next(error);
     }
   },
-  postUser: async (req, res, next) => {
+  createUser: async (req, res, next) => {
     try {
       const newUserData: UserIncomingData = req.body;
       if (!newUserData.email || !newUserData.name || !newUserData.password) {
+        return;
+      }
+      const userFound: User = await databaseAccess.getOneByEmail(
+        newUserData.email
+      );
+      if (userFound) {
+        res
+          .status(400)
+          .json(
+            `Cannot create user wit email:'${newUserData.email}' already exist!`
+          );
         return;
       }
       const passwordHashed = hashCreator(newUserData.password);
@@ -72,17 +83,19 @@ const usersController: UserController = {
         res.status(400).send("'id' is required");
         return;
       }
-
       const response: DeleteResponse = await userManager.deleteOne(id);
+      if (response.acknowledged === true && response.deletedCount === 0) {
+        res
+          .status(400)
+          .json(`Cannot delete user with given id:${id}, doesn't exist!`);
+        return;
+      }
       if (response.acknowledged === true && response.deletedCount === 1) {
         res
           .status(200)
           .json({ message: `User id:${id} was removed successfully` });
         return;
       }
-      res
-        .status(500)
-        .json({ message: 'An Error has occurred try again later' });
     } catch (error) {
       next(error);
     }
@@ -99,12 +112,14 @@ const usersController: UserController = {
           throw new Error(error.message);
         }
       });
-
       const user: User = await userManager.getOne(id);
       if (!user) {
-        throw new Error(
-          `Cannot update user, user with the given id:${newData._id} doesn't exist`
-        );
+        res
+          .status(400)
+          .json(
+            `Cannot update user, user with the given id:${id} doesn't exist!`
+          );
+        return;
       }
       // check old password before update the newOne
       if (newData.newPassword && newData.oldPassword) {
@@ -122,9 +137,7 @@ const usersController: UserController = {
           user
         );
       }
-
       const userUpdated = await userManager.updateOne(id, newData, req.file);
-
       res.status(200).send(userUpdated);
     } catch (error) {
       // if any error ,make sure multer doesn't store image
