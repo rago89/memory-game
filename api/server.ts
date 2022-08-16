@@ -31,7 +31,7 @@ finalConfig.STATIC_DIR &&
 app.use('/api', routes);
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);
-  res.sendStatus(500).end();
+  res.status(500).end(err.message);
 });
 
 export default app;
