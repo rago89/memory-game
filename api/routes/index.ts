@@ -7,6 +7,6 @@ import { default as gameRoutes } from './sub-routes/game';
 const routes: Router = express.Router();
 
 routes.use('/users', usersRoutes);
-routes.use('/game', gameRoutes);
+routes.use('/games', gameRoutes);
 
 export default routes;
