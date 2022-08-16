@@ -92,11 +92,7 @@ const usersController: UserController = {
       const { id } = req.params;
       const newData: UserDataToUpdate = req.body;
 
-      // checkIds
-      const isValidId = checkParamAndBodyIds(id, newData._id);
-
-      if (isValidId) delete newData._id;
-
+      if (checkParamAndBodyIds(id, newData._id)) delete newData._id;
       upload(req, res, function (error) {
         if (error instanceof multer.MulterError) {
           // A Multer error occurred when uploading.
