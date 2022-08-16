@@ -54,8 +54,14 @@ content-type: application/json
 }
 
 ###
-
+// Get all
 GET http://localhost:4000/api/game/ HTTP/1.1
+content-type: application/json
+
+
+###
+// Get one
+GET http://localhost:4000/api/game/62f540163539e1058d15aed0 HTTP/1.1
 content-type: application/json
 
 
