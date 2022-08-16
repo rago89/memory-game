@@ -7,7 +7,7 @@ import { deleteImageAsync } from '../utils/delete-image';
 
 import { default as dbAccess } from './../data-access/users';
 
-export interface GameManager {
+export interface UserManager {
   getAll(): Promise<User[]>;
   postUser(user: User): Promise<CreatedUser | void>;
   getOne(id: string): Promise<User>;
@@ -19,7 +19,7 @@ export interface GameManager {
   ): Promise<UpdatedUser | {}>;
 }
 
-const gameManager: GameManager = {
+const userManager: UserManager = {
   postUser: async (user) => {
     return await dbAccess.create(user);
   },
@@ -64,4 +64,4 @@ const gameManager: GameManager = {
   },
 };
 
-export default gameManager;
+export default userManager;
