@@ -36,9 +36,16 @@ const gameController: GameController = {
     }
   },
   getOne: async (req, res, next) => {
-    const id = new ObjectId(req.params['id']);
-    const game: Game = await gameManager.getOne(id);
-    res.status(200).json(game);
+    try {
+      if (!req.params['id']) {
+        throw new Error('Id is required');
+      }
+      const id = new ObjectId(req.params['id']);
+      const game: Game = await gameManager.getOne(id);
+      res.status(200).json(game);
+    } catch (error) {
+      next(error);
+    }
   },
   updateGame: async (req, res, next) => {},
 };
