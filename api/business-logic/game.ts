@@ -4,6 +4,7 @@ import Game from '../models/game';
 
 export interface GameManager {
   postGame(newGame: Game): Promise<Game>;
+  getAll(): Promise<Game[]>;
   getOne(id: ObjectId): Promise<Game>;
   updateOne(newData: Game): Promise<Game | undefined>;
 }
@@ -11,6 +12,9 @@ export interface GameManager {
 const gameManager: GameManager = {
   postGame: async (newGame) => {
     return await dbAccess.create(newGame);
+  },
+  getAll: async () => {
+    return await dbAccess.getAll();
   },
   getOne: async (id) => {
     return await dbAccess.getOne(id);

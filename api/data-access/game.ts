@@ -7,6 +7,7 @@ export type UpdateResponse = { acknowledged: boolean; modifiedCount: number };
 
 export interface UserDbAccess {
   create(gameData: Game): Promise<Game>;
+  getAll(): Promise<Game[]>;
   getOne(id: ObjectId): Promise<Game>;
   updateOne(newData: Game): Promise<UpdateResponse | undefined>;
 }
@@ -18,6 +19,10 @@ const databaseAccess: UserDbAccess = {
       return game;
     }
     throw new Error('An error has occurred');
+  },
+  async getAll() {
+    const games = (await collections.games?.find().toArray()) as Game[];
+    return games;
   },
   async getOne(id) {
     const game = (await collections.games?.findOne({

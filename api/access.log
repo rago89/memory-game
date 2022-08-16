@@ -283,3 +283,4 @@
 ::ffff:127.0.0.1 - - [11/Aug/2022:17:13:04 +0000] "GET /api/users/62d10e9ef2583acc65d88b7c HTTP/1.1" 200 4 "-" "vscode-restclient"
 ::ffff:127.0.0.1 - - [11/Aug/2022:17:13:08 +0000] "GET /api/users/ HTTP/1.1" 200 8040 "-" "vscode-restclient"
 ::ffff:127.0.0.1 - - [11/Aug/2022:17:33:38 +0000] "POST /api/users/register HTTP/1.1" 201 78 "-" "vscode-restclient"
+::ffff:127.0.0.1 - - [16/Aug/2022:08:14:10 +0000] "GET /api/game/ HTTP/1.1" 200 86 "-" "vscode-restclient"

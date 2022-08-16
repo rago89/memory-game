@@ -4,6 +4,7 @@ import gameController from '../../controllers/game';
 
 const routes: Router = express.Router();
 
+routes.get('/', gameController.getAll);
 routes.post('/level', gameController.postGame);
 routes.get('/:id', gameController.getOne);
 routes.put('/:id', gameController.updateGame);

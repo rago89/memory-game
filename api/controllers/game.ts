@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import gameManager from '../business-logic/game';
 export interface GameController {
   postGame(req: Request, res: Response, next: NextFunction): Promise<void>;
+  getAll(req: Request, res: Response, next: NextFunction): Promise<void>;
   getOne(req: Request, res: Response, next: NextFunction): Promise<void>;
   updateGame(req: Request, res: Response, next: NextFunction): Promise<void>;
 }
@@ -16,6 +17,14 @@ const gameController: GameController = {
         res.status(500).json('Message: An error has occurred try again later');
       }
       res.status(201).json(postGame);
+    } catch (error) {
+      next(error);
+    }
+  },
+  getAll: async (req, res, next) => {
+    try {
+      const games: Game[] = await gameManager.getAll();
+      res.status(200).json(games);
     } catch (error) {
       next(error);
     }
