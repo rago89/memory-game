@@ -12,6 +12,11 @@ const gameController: GameController = {
   postGame: async (req, res, next) => {
     try {
       const newGame: Game = req.body;
+      if (newGame.gameLevel > 0) {
+        throw new Error(
+          'Cannot start new game user has already started to play'
+        );
+      }
       const postGame: Game = await gameManager.postGame(newGame);
       if (Object.keys(postGame).length === 0) {
         res.status(500).json('Message: An error has occurred try again later');
