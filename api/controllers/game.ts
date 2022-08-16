@@ -1,6 +1,7 @@
-import Game from '../models/game';
 import { Request, Response, NextFunction } from 'express';
 import gameManager from '../business-logic/game';
+import { ObjectId } from 'mongodb';
+import Game from '../models/game';
 export interface GameController {
   postGame(req: Request, res: Response, next: NextFunction): Promise<void>;
   getAll(req: Request, res: Response, next: NextFunction): Promise<void>;
@@ -34,7 +35,11 @@ const gameController: GameController = {
       next(error);
     }
   },
-  getOne: async (req, res, next) => {},
+  getOne: async (req, res, next) => {
+    const id = new ObjectId(req.params['id']);
+    const game: Game = await gameManager.getOne(id);
+    res.status(200).json(game);
+  },
   updateGame: async (req, res, next) => {},
 };
 

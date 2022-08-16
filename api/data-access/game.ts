@@ -26,7 +26,7 @@ const databaseAccess: UserDbAccess = {
   },
   async getOne(id) {
     const game = (await collections.games?.findOne({
-      _id: new ObjectId(id),
+      _id: id,
     })) as Game;
     return game;
   },
