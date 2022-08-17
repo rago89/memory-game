@@ -13,22 +13,26 @@ const tokenChecker = async (
   res: Response,
   next: NextFunction
 ) => {
-  const authHeader = req.headers['authorization'];
-  const token: string | undefined = authHeader && authHeader.split(' ')[1];
-  if (!token) {
-    res
-      .status(401)
-      .json({ message: 'validation error, make sure you are registered!' });
-    return;
-  }
-
-  jwt.verify(token, process.env['ACCESS_TOKEN_SECRET'], (error: any) => {
-    if (error) {
-      res.status(403).json(error.message);
+  try {
+    const authHeader = req.headers['authorization'];
+    const token: string | undefined = authHeader && authHeader.split(' ')[1];
+    if (!token) {
+      res
+        .status(401)
+        .json({ message: 'validation error, make sure you are registered!' });
       return;
     }
-    next();
-  });
+
+    jwt.verify(token, process.env['ACCESS_TOKEN_SECRET'], (error: any) => {
+      if (error) {
+        res.status(403).json(error.message);
+        return;
+      }
+      next();
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export default tokenChecker;

@@ -17,6 +17,7 @@ export interface UserDbAccess {
     newData: UserDataToUpdate
   ): Promise<UpdateResponse | undefined>;
   deleteOne(id: string): Promise<DeleteResponse>;
+  findUserLog(email: string, password: string): Promise<User>;
 }
 const databaseAccess: UserDbAccess = {
   getAll: async () => {
@@ -65,6 +66,13 @@ const databaseAccess: UserDbAccess = {
   async getOneByEmail(email) {
     const user = (await collections.users?.findOne({
       email,
+    })) as User;
+    return user;
+  },
+  findUserLog: async (email, password) => {
+    const user = (await collections.users?.findOne({
+      email,
+      password,
     })) as User;
     return user;
   },

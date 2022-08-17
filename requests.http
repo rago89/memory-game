@@ -2,8 +2,8 @@ POST http://localhost:4000/api/users/register HTTP/1.1
 content-type: application/json
 
 {
-    "name": "sample9",
-    "email": "test18@email.com",
+    "name": "sample",
+    "email": "test@email.com",
     "password":"hello123"
 }
 
@@ -11,20 +11,27 @@ content-type: application/json
 // Get users
 GET http://localhost:4000/api/users/ HTTP/1.1
 content-type: application/json
+Authorization: token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmZjZWQ3YTEyOWY2YjM2N2E3N2Y2NzUiLCJ1c2VyTmFtZSI6InNhbXBsZSIsInVzZXJFbWFpbCI6InRlc3RAZW1haWwuY29tIiwiaWF0IjoxNjYwNzQzMDUwfQ.RL4oDx0YJK0DCAUm-bZDQjHSLpmU7aeMI7e9NNXQEY8
 
 ###
 
-GET http://localhost:4000/api/users/62f0e3b5712912f5d2538674 HTTP/1.1
+GET http://localhost:4000/api/users/62fced7a129f6b367a77f675 HTTP/1.1
 content-type: application/json`
+Authorization: token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmZjZWQ3YTEyOWY2YjM2N2E3N2Y2NzUiLCJ1c2VyTmFtZSI6InNhbXBsZSIsInVzZXJFbWFpbCI6InRlc3RAZW1haWwuY29tIiwiaWF0IjoxNjYwNzQzMDUwfQ.RL4oDx0YJK0DCAUm-bZDQjHSLpmU7aeMI7e9NNXQEY8
+
 
 ###
 
-DELETE  http://localhost:4000/api/users/delete/62f0e6bd6b92a7b049d17222 HTTP/1.1
+DELETE  http://localhost:4000/api/users/delete/62fced7a129f6b367a77f675 HTTP/1.1
 content-type: application/json`
+Authorization: token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmZjZWQ3YTEyOWY2YjM2N2E3N2Y2NzUiLCJ1c2VyTmFtZSI6InNhbXBsZSIsInVzZXJFbWFpbCI6InRlc3RAZW1haWwuY29tIiwiaWF0IjoxNjYwNzQzMDUwfQ.RL4oDx0YJK0DCAUm-bZDQjHSLpmU7aeMI7e9NNXQEY8
+
 
 ###
-PUT http://localhost:4000/api/users/update/62f0e6bd6b92a7b049d17222
+PUT http://localhost:4000/api/users/update/62fcee65129f6b367a77f676
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+Authorization: token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MmZjZWQ3YTEyOWY2YjM2N2E3N2Y2NzUiLCJ1c2VyTmFtZSI6InNhbXBsZSIsInVzZXJFbWFpbCI6InRlc3RAZW1haWwuY29tIiwiaWF0IjoxNjYwNzQzMDUwfQ.RL4oDx0YJK0DCAUm-bZDQjHSLpmU7aeMI7e9NNXQEY8
+
 
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
 Content-Disposition: form-data; name="name"
@@ -33,13 +40,24 @@ update6
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
 Content-Disposition: form-data; name="_id"
 
-62f0e6bd6b92a7b049d17222
+62fcee65129f6b367a77f676
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="avatar"; filename="dog.jpg"
+Content-Disposition: form-data; name="avatar"; filename="child-avatar.webp"
 Content-Type: image/jpg
 
-< ./api/test-images/dog.jpg
+< ./api/test-images/child-avatar.webp
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+//------------------------------------Login--------------------------------//
+###
+
+POST http://localhost:4000/api/login HTTP/1.1
+content-type: application/json
+
+{
+    "email": "test@email.com",
+    "password": "hello123"
+}
 
 //------------------------------------Game--------------------------------//
 
