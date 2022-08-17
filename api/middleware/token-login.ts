@@ -1,6 +1,7 @@
-const jwt = require('jsonwebtoken');
+import jwt, { Secret } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-require('dotenv').config();
+import * as dotenv from 'dotenv';
+
 /**
  *
  * Checks the token created while user login.
@@ -14,6 +15,7 @@ const tokenChecker = async (
   next: NextFunction
 ) => {
   try {
+    dotenv.config();
     const authHeader = req.headers['authorization'];
     const token: string | undefined = authHeader && authHeader.split(' ')[1];
     if (!token) {
@@ -23,13 +25,17 @@ const tokenChecker = async (
       return;
     }
 
-    jwt.verify(token, process.env['ACCESS_TOKEN_SECRET'], (error: any) => {
-      if (error) {
-        res.status(403).json(error.message);
-        return;
+    jwt.verify(
+      token,
+      process.env['ACCESS_TOKEN_SECRET'] as string,
+      (error: any) => {
+        if (error) {
+          res.status(403).json(error.message);
+          return;
+        }
+        next();
       }
-      next();
-    });
+    );
   } catch (error) {
     next(error);
   }

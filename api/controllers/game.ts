@@ -3,7 +3,7 @@ import gameManager from '../business-logic/game';
 import userManager from '../business-logic/users';
 import { ObjectId } from 'mongodb';
 import Game from '../models/game';
-import checkParamAndBodyIds from '../utils/check-ids';
+import userValidator from '../validators/user';
 export interface GameController {
   postGame(req: Request, res: Response, next: NextFunction): Promise<void>;
   getAll(req: Request, res: Response, next: NextFunction): Promise<void>;
@@ -70,7 +70,7 @@ const gameController: GameController = {
     try {
       const _id = req.params['id'];
       const { userId, gameLevel, gameId } = req.body;
-      if (!checkParamAndBodyIds(_id, gameId)) {
+      if (!userValidator.checkParamAndBodyIds(_id, gameId)) {
         throw new Error('Ids do not match');
       }
       const game = new Game(userId, gameLevel, new ObjectId(_id));
