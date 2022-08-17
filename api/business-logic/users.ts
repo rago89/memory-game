@@ -54,7 +54,6 @@ const userManager: UserManager = {
         _id: user._id,
         name: user.name,
         email: user.email,
-        gameLevel: user.gameLevel,
         avatar: user.avatar,
         updateDate: user.updateDate,
       };

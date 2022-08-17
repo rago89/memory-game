@@ -1,18 +1,16 @@
+import { Request, Response, NextFunction } from 'express';
+import { hashCreator } from '../utils/hashCreator';
+import multer from 'multer';
 import {
   UserDataToUpdate,
   UserIncomingData,
   CreatedUser,
-} from 'api/interfaces/user';
+} from '../interfaces/user';
 import User from '../models/user';
-import { Request, Response, NextFunction } from 'express';
-import { hashCreator } from '../utils/hashCreator';
 import userManager from './../business-logic/users';
 import databaseAccess, { DeleteResponse } from '../data-access/users';
-import checkPasswords from '../utils/check-passwords';
-import checkEmails from '../utils/check-emails';
-import checkParamAndBodyIds from '../utils/check-ids';
-import multer from 'multer';
 import { deleteImageAsync } from '../utils/delete-image';
+import userValidator from '../validators/user';
 const upload = multer().single('avatar');
 
 export interface UserController {
@@ -104,8 +102,8 @@ const usersController: UserController = {
     try {
       const { id } = req.params;
       const newData: UserDataToUpdate = req.body;
-
-      if (checkParamAndBodyIds(id, newData._id)) delete newData._id;
+      const isValidId = userValidator.checkParamAndBodyIds(id, newData._id);
+      if (isValidId) delete newData._id;
       upload(req, res, function (error) {
         if (error instanceof multer.MulterError) {
           // A Multer error occurred when uploading.
@@ -123,7 +121,7 @@ const usersController: UserController = {
       }
       // check old password before update the newOne
       if (newData.newPassword && newData.oldPassword) {
-        newData.password = checkPasswords(
+        newData.password = userValidator.checkPasswords(
           newData.oldPassword,
           newData.newPassword,
           user
@@ -131,7 +129,7 @@ const usersController: UserController = {
       }
       // check if user update the email
       if (newData.currentEmail && newData.newEmail) {
-        newData.email = checkEmails(
+        newData.email = userValidator.checkEmails(
           newData.currentEmail,
           newData.newEmail,
           user
