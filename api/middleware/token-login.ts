@@ -31,4 +31,4 @@ const tokenChecker = async (
   });
 };
 
-module.exports = tokenChecker;
+export default tokenChecker;
